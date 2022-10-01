@@ -13,7 +13,7 @@ There are some permissions required for using this extension -
 There are three components for this integration
 
 1. This ADO Extension - It creates a Codespaces Hub under Repo tab in ADO where users can manage and connect to their codespaces.
-2. Stateless Oauth Server - It handles authentication requests by generating access tokens and then sends them back to the extension. It doesn't store any token by itself. The code for the stateless server app is [here](https://github.com/ronakj/github-oauth-azure-function).
+2. Stateless Oauth Server - It handles authentication requests by generating access tokens and then sends them back to the extension. It doesn't store any token by itself. The code for the stateless server app is [here](https://github.com/ronakj/ado-gh-codespaces-auth-server).
 3. GitHub App - This app is authorized by the GitHub repo admin to the bridge repo. The Oath Server generates user access token for this app. The default GitHub app can be installed from [here](https://github.com/apps/ado-gh-codespaces/installations/new).
 
 While you can use the default stateless server and app without any additional configuration, if you wish to use your own Oauth Server and GitHub App for security reasons, it is possible to do so. See here.
