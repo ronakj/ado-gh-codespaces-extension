@@ -1,0 +1,23 @@
+@import "node_modules/azure-devops-ui/Core/_platformCommon.scss";
+
+.codespaces-hub {
+  font-size: $fontSizeM;
+  margin: $spacing-8;
+}
+
+.avatar-icon {
+  margin-left: $spacing-4;
+}
+
+.table-example {
+  min-width: 500px;
+}
+
+.bolt-table-card {
+  width: 100%;
+}
+
+.flex-container {
+  display: flex;
+  flex-direction: column;
+}
