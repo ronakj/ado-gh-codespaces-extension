@@ -26,7 +26,7 @@ jobs:
           
       - name: Publish
         run: |
-          npm run publish-extension --token $TOKEN
+          npm run publish-extension -- --token $TOKEN
         env:
           TOKEN: ${{ secrets.PUBLISH_PAT }}
           
