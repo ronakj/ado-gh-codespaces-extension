@@ -2,7 +2,7 @@
   "manifestVersion": 1,
   "id": "ADOGitHubCodespaces",
   "publisher": "RJEx",
-  "version": "1.0.422",
+  "version": "1.0.423",
   "name": "ADO <--> Github Codespaces",
   "description": "Integrate ADO repos with GitHub Codespaces easily using this extension",
   "scopes": ["vso.code"],
@@ -17,7 +17,7 @@
   },
   "content": {
     "details": {
-      "path": "overview.md"
+      "path": "README.md"
     }
   },
   "files": [
