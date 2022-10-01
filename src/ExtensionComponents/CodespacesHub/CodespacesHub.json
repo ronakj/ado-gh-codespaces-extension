@@ -31,7 +31,7 @@
         {
           "name": "Feature",
           "properties": {
-            "featureId": "ADOCodespacesDev.ADOCodespacesDev.feature-codespaces"
+            "featureId": "RJEx.ADOGitHubCodespaces.feature-codespaces"
           }
         }
       ]
