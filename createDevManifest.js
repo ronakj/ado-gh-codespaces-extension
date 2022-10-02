@@ -9,10 +9,11 @@ const DevExtensionId = "ADOGitHubCodespacesDev";
 const manifest = (fs.readFileSync(manifestPath).toString());
 const newManifest = JSON.parse(manifest.split(ExtensionId).join(DevExtensionId))
 
+const versionString = Date.now().toString();
 const devManifestData = {
   baseUri: "https://localhost:3000",
   public: false,
-  version: "1.0." + Date.now(),
+  version: `${versionString.slice(0, 1)}.${versionString.slice(1, 7)}.${versionString.slice(7, 13)}`,
   name: newManifest.name + " (DEV)",
   description: newManifest.description + " (DEV)",
   contributions: newManifest.contributions.map(contribution => ({
