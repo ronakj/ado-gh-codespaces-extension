@@ -3,6 +3,7 @@ node_modules/
 dist/
 *.vsix
 
+*-dev.json
 # JUNIT testresult
 test-results.xml
 

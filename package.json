@@ -4,13 +4,18 @@
   "main": "index.js",
   "scripts": {
     "clean": "rimraf ./dist",
+    
     "compile": "npm run clean && webpack --mode production",
-    "compile:dev": "npm run clean && webpack --mode development",
     "build": "npm run compile",
-    "build:dev": "npm run compile:dev && npm run postbuild",
     "postbuild": "npm run package-extension -- --rev-version",
-    "package-extension": "tfx extension create --manifest-globs ado-gh-codespaces-extension.json src/ExtensionComponents/**/*.json",
-    "publish-extension": "tfx extension publish --manifest-globs ado-gh-codespaces-extension.json src/ExtensionComponents/**/*.json",
+    "package-extension": "tfx extension create --manifest-globs ado-gh-codespaces-extension.json",
+    "publish-extension": "tfx extension publish --manifest-globs ado-gh-codespaces-extension.json",
+
+    "compile:dev": "npm run clean && webpack --mode development",
+    "build:dev": "npm run compile:dev",
+    "postbuild:dev": "npm run package-dev -- --rev-version",
+    "package-dev": "tfx extension create --manifest-globs ado-gh-codespaces-extension-dev.json",
+    "publish-dev": "tfx extension publish --manifest-globs ado-gh-codespaces-extension-dev.json",
     "start:dev": "webpack-dev-server --mode development"
   },
   "author": "",
