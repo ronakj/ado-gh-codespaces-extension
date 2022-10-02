@@ -1,3 +1,4 @@
 {
-  "postCreateCommand": "node ./createDevManifest.js"
+  "postCreateCommand": "node ./createDevManifest.js",
+  "forwardPorts": [3000]
 }
