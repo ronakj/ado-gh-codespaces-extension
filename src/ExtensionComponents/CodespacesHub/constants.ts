@@ -4,7 +4,7 @@ export const DEFAULT_AUTH_SERVER = window.location.origin.includes("localhost")
 
 export const DEFAULT_PAT_SCOPES = ["Code: Read & Write"];
 
-export const DEFAULT_PAT_SECRET = "{ORG}_PAT";
+export const DEFAULT_PAT_SECRET = "{ORG}_ADO_PAT";
 
 export const ACCESS_TOKEN_KEY = "accessToken";
 
