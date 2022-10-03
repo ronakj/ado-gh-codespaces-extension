@@ -130,12 +130,12 @@ export class CreateCodespaceDialog extends React.Component<
               this.state.machineSelected.value[0].beginIndex
             ].name,
         });
-      if (this.props.codespacesConfig.workspaceFolder) {
-        await octokit.rest.codespaces.updateForAuthenticatedUser({
-          codespace_name: result.data.name,
-          recent_folders: [this.props.codespacesConfig.workspaceFolder],
-        });
-      }
+      // if (this.props.codespacesConfig.workspaceFolder) {
+      //   await octokit.rest.codespaces.updateForAuthenticatedUser({
+      //     codespace_name: result.data.name,
+      //     recent_folders: [this.props.codespacesConfig.workspaceFolder],
+      //   });
+      // }
       await this.props.onCreate();
       if (this.props.editor === Editor.VSCodeDesktop) {
         window.open(getVsCodeDesktopUrl(result.data.name), "_top");
