@@ -25,7 +25,7 @@
       }
     },
     {
-      "id": "codespaces-hub-hub",
+      "id": "codespaces-hub",
       "type": "ms.vss-web.hub",
       "description": "Custom hub in the Code hub group that displays information about the currently active Git repository.",
       "targets": ["ms.vss-code-web.code-hub-group"],
@@ -52,11 +52,9 @@
       "properties": {
         "text": "Create Codespace on branch",
         "iconName": "PC1",
-        "group": "codespaces",
         "registeredObjectId": "codespaces-create-on-branch",
         "uri": "dist/CodespacesAction/CodespacesAction.html",
-        "name": "Codespaces",
-        "order": 3
+        "name": "Codespaces"
       },
       "constraints": [
         {
