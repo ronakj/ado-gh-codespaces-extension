@@ -27,7 +27,7 @@ export const getDefaultEditor = async (): Promise<Editor> => {
       scopeType: "User",
     });
   } catch (err) {}
-  return editor || Editor.VSCodeWeb;
+  return editor || Editor.VSCodeDesktop;
 };
 
 export const setDefaultEditor = async (editor: Editor) => {
