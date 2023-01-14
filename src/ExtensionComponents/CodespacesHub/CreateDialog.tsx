@@ -21,6 +21,8 @@ export class CreateCodespaceDialog extends React.Component<
   {
     isDialogOpen: ObservableValue<boolean>;
     githubData: GitHubData;
+    autoCreate: boolean;
+    branchName: string | null;
     codespacesConfig: CodespacesConfig;
     editor: Editor;
     onCreate: () => Promise<void>;
@@ -97,54 +99,59 @@ export class CreateCodespaceDialog extends React.Component<
       machineData,
       machineSelected: machineSelection,
     });
+    if (this.props.autoCreate) {
+      this.onCreate();
+    }
   }
+
+  private onCreate = async () => {
+    this.setState({
+      isCreating: true,
+    });
+    const octokit = new Octokit({ auth: this.props.githubData.accessToken });
+    const bridgeRepoName = this.props.codespacesConfig.ghBridgeRepoName;
+    const bridgeRepoOwner = this.props.codespacesConfig.ghBridgeRepoOwner;
+    if (!bridgeRepoName || !bridgeRepoOwner) {
+      return;
+    }
+    const result =
+      await octokit.rest.codespaces.createWithRepoForAuthenticatedUser({
+        repo: bridgeRepoName,
+        owner: bridgeRepoOwner,
+        ref: this.state.branchData[
+          this.state.branchSelected.value[0].beginIndex
+        ].name,
+        devcontainer_path:
+          this.state.devContainerData.devcontainers[
+            this.state.devContainerSelected.value[0].beginIndex
+          ].path,
+        machine:
+          this.state.machineData.machines[
+            this.state.machineSelected.value[0].beginIndex
+          ].name,
+      });
+    // if (this.props.codespacesConfig.workspaceFolder) {
+    //   await octokit.rest.codespaces.updateForAuthenticatedUser({
+    //     codespace_name: result.data.name,
+    //     recent_folders: [this.props.codespacesConfig.workspaceFolder],
+    //   });
+    // }
+    await this.props.onCreate();
+    if (this.props.editor === Editor.VSCodeDesktop) {
+      window.open(getVsCodeDesktopUrl(result.data.name), "_top");
+    } else if (this.props.autoCreate) {
+      window.open(result.data.web_url, "_top");
+    } else {
+      window.open(result.data.web_url, "_blank");
+    }
+    this.setState({
+      isCreating: false,
+    });
+    this.props.isDialogOpen.value = false;
+  };
 
   public render() {
     const onDismiss = () => {
-      this.props.isDialogOpen.value = false;
-    };
-
-    const onCreate = async () => {
-      this.setState({
-        isCreating: true,
-      });
-      const octokit = new Octokit({ auth: this.props.githubData.accessToken });
-      const bridgeRepoName = this.props.codespacesConfig.ghBridgeRepoName;
-      const bridgeRepoOwner = this.props.codespacesConfig.ghBridgeRepoOwner;
-      if (!bridgeRepoName || !bridgeRepoOwner) {
-        return;
-      }
-      const result =
-        await octokit.rest.codespaces.createWithRepoForAuthenticatedUser({
-          repo: bridgeRepoName,
-          owner: bridgeRepoOwner,
-          ref: this.state.branchData[
-            this.state.branchSelected.value[0].beginIndex
-          ].name,
-          devcontainer_path:
-            this.state.devContainerData.devcontainers[
-              this.state.devContainerSelected.value[0].beginIndex
-            ].path,
-          machine:
-            this.state.machineData.machines[
-              this.state.machineSelected.value[0].beginIndex
-            ].name,
-        });
-      // if (this.props.codespacesConfig.workspaceFolder) {
-      //   await octokit.rest.codespaces.updateForAuthenticatedUser({
-      //     codespace_name: result.data.name,
-      //     recent_folders: [this.props.codespacesConfig.workspaceFolder],
-      //   });
-      // }
-      await this.props.onCreate();
-      if (this.props.editor === Editor.VSCodeDesktop) {
-        window.open(getVsCodeDesktopUrl(result.data.name), "_top");
-      } else {
-        window.open(result.data.web_url, "_blank");
-      }
-      this.setState({
-        isCreating: false,
-      });
       this.props.isDialogOpen.value = false;
     };
 
@@ -240,7 +247,7 @@ export class CreateCodespaceDialog extends React.Component<
                       }
                       primary={true}
                       disabled={this.state.isCreating}
-                      onClick={onCreate}
+                      onClick={this.onCreate}
                     />
                   </PanelFooter>
                 </CustomDialog>

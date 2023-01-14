@@ -63,6 +63,8 @@ interface CodespacesHubContentState {
   isUpdateDialogOpen: ObservableValue<boolean>;
   selectedCodespaceName: string;
   gitHubData: GitHubData | null;
+  autoCreate: boolean;
+  branchName: string | null;
   codespacesConfig: CodespacesConfig;
   defaultEditor: Editor;
 }
@@ -196,6 +198,8 @@ class CodespacesHubContent extends React.Component<
       isCreateDialogOpen: new ObservableValue(false),
       isUpdateDialogOpen: new ObservableValue(false),
       selectedCodespaceName: "",
+      autoCreate: false,
+      branchName: null,
       codespacesConfig: {
         authServerUrl: DEFAULT_AUTH_SERVER,
         workspaceFolder: `/workspaces`,
@@ -470,7 +474,15 @@ class CodespacesHubContent extends React.Component<
       return null;
     }
     const octokit = new Octokit({ auth: accessToken });
-    const { data: userData } = await octokit.rest.users.getAuthenticated();
+    let userData: Awaited<
+      ReturnType<typeof octokit.rest.users.getAuthenticated>
+    >["data"];
+    try {
+      const data = await octokit.rest.users.getAuthenticated();
+      userData = data.data;
+    } catch (err) {
+      return null;
+    }
 
     if (
       !this.state.codespacesConfig.ghBridgeRepoName ||
@@ -618,12 +630,18 @@ class CodespacesHubContent extends React.Component<
 
   public async componentDidMount(): Promise<void> {
     await SDK.init();
+    let params = new URL(window.location.href).searchParams;
+    const autoCreate = params.get("autoCreate") === "true";
+    const branchName = params.get("branch");
     const [editor, codespacesConfig] = await Promise.all([
       this.getDefaultEditor(),
       this.getCodespacesConfig(),
     ]);
     this.setState({
       defaultEditor: editor,
+      autoCreate,
+      branchName,
+      isCreateDialogOpen: new ObservableValue(autoCreate),
       codespacesConfig,
     });
     await this.refreshGitHubData();
@@ -798,6 +816,8 @@ class CodespacesHubContent extends React.Component<
           isDialogOpen={this.state.isCreateDialogOpen}
           githubData={this.state.gitHubData}
           editor={this.state.defaultEditor}
+          autoCreate={this.state.autoCreate}
+          branchName={this.state.branchName}
           codespacesConfig={this.state.codespacesConfig}
           onCreate={() => this.refreshCodespacesData()}
         />

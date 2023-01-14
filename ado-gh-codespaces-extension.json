@@ -32,8 +32,31 @@
       "properties": {
         "name": "Codespaces",
         "order": 100,
-        "uri": "dist/CodespacesHub/context.html",
+        "uri": "dist/CodespacesHub/CodespacesHub.html",
         "iconName": "PC1"
+      },
+      "constraints": [
+        {
+          "name": "Feature",
+          "properties": {
+            "featureId": "RJEx.ADOGitHubCodespaces.feature-codespaces"
+          }
+        }
+      ]
+    },
+    {
+      "id": "codespaces-create-on-branch",
+      "type": "ms.vss-web.action",
+      "description": "Create a Codespace on a branch",
+      "targets": ["ms.vss-code-web.git-branches-tree-menu"],
+      "properties": {
+        "text": "Create Codespace on branch",
+        "iconName": "PC1",
+        "group": "codespaces",
+        "registeredObjectId": "codespaces-create-on-branch",
+        "uri": "dist/CodespacesAction/CodespacesAction.html",
+        "name": "Codespaces",
+        "order": 3
       },
       "constraints": [
         {
