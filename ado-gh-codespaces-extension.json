@@ -64,6 +64,27 @@
           }
         }
       ]
+    },
+    {
+      "id": "codespaces-create-on-pr",
+      "type": "ms.vss-web.action",
+      "description": "Create a Codespace on a PR",
+      "targets": ["ms.vss-code-web.pull-request-action-menu"],
+      "properties": {
+        "text": "Create Codespace on PR",
+        "iconName": "PC1",
+        "registeredObjectId": "codespaces-create-on-pr",
+        "uri": "dist/CodespacesAction/CodespacesAction.html",
+        "name": "Codespaces"
+      },
+      "constraints": [
+        {
+          "name": "Feature",
+          "properties": {
+            "featureId": "RJEx.ADOGitHubCodespaces.feature-codespaces"
+          }
+        }
+      ]
     }
   ],
   "targets": [

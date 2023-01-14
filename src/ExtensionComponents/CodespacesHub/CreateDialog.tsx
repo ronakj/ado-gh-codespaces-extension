@@ -14,8 +14,9 @@ import { DropdownSelection } from "azure-devops-ui/Utilities/DropdownSelection";
 import { Link } from "azure-devops-ui/Link";
 
 import { Octokit } from "octokit";
-import { CodespacesConfig, Editor, GitHubData } from "./types";
+import { CodespacesConfig, Editor, GitHubData } from "../../types";
 import { getVsCodeDesktopUrl } from "./codespacesUtils";
+import { storeCodespaceConfig } from "../../Utils/ExtensionData";
 
 export class CreateCodespaceDialog extends React.Component<
   {
@@ -137,6 +138,9 @@ export class CreateCodespaceDialog extends React.Component<
     //   });
     // }
     await this.props.onCreate();
+    await storeCodespaceConfig(result.data.name, {
+      branch: this.props.branchName,
+    });
     if (this.props.editor === Editor.VSCodeDesktop) {
       window.open(getVsCodeDesktopUrl(result.data.name), "_top");
     } else if (this.props.autoCreate) {
@@ -189,10 +193,14 @@ export class CreateCodespaceDialog extends React.Component<
                     </HeaderTitleArea>
                   </CustomHeader>
                   <PanelContent className="flex-container">
-                    <FormItem className="flex-column" label="Select branch">
+                    <FormItem
+                      className="flex-column"
+                      label="Select Bridge Repo Branch"
+                    >
                       <Dropdown
                         ariaLabel="Single select"
                         placeholder="Select an Option"
+                        disabled={this.state.isCreating}
                         className=""
                         items={this.state.branchData.map((data) => {
                           return {
@@ -210,6 +218,7 @@ export class CreateCodespaceDialog extends React.Component<
                       <Dropdown
                         ariaLabel="Single select"
                         placeholder="Select an Option"
+                        disabled={this.state.isCreating}
                         items={this.state.machineData.machines.map((data) => {
                           return {
                             id: data.name,
@@ -226,6 +235,7 @@ export class CreateCodespaceDialog extends React.Component<
                       <Dropdown
                         ariaLabel="Single select"
                         placeholder="Select an Option"
+                        disabled={this.state.isCreating}
                         items={this.state.devContainerData.devcontainers.map(
                           (data) => {
                             return {

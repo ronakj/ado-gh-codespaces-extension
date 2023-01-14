@@ -8,9 +8,10 @@ import {
 } from "azure-devops-extension-api/Git/GitServices";
 import {
   CommonServiceIds,
-  IExtensionDataService,
   IGlobalMessagesService,
 } from "azure-devops-extension-api/Common/CommonServices";
+
+import * as ExtensionData from "../../Utils/ExtensionData";
 
 import { ZeroData, ZeroDataActionType } from "azure-devops-ui/ZeroData";
 import { MenuItemType } from "azure-devops-ui/Menu";
@@ -41,7 +42,7 @@ import { Ago } from "azure-devops-ui/Ago";
 import { Octokit } from "octokit";
 import axios from "axios";
 
-import { CodespacesConfig, GitHubData, Editor } from "./types";
+import { CodespacesConfig, GitHubData, Editor } from "../../types";
 import { showRootComponent } from "../../Common";
 import { CreateCodespaceDialog } from "./CreateDialog";
 import { RenameDialog } from "./RenameDialog";
@@ -53,7 +54,6 @@ import {
   DEFAULT_AUTH_SERVER,
   DEFAULT_PAT_SCOPES,
   DEFAULT_PAT_SECRET,
-  EDITOR_CONFIG_KEY,
 } from "./constants";
 import { getVsCodeDesktopUrl } from "./codespacesUtils";
 
@@ -364,23 +364,7 @@ class CodespacesHubContent extends React.Component<
   }
 
   public async getDefaultEditor(): Promise<Editor> {
-    const extensionDataService = await SDK.getService<IExtensionDataService>(
-      CommonServiceIds.ExtensionDataService
-    );
-    const accessToken = await SDK.getAccessToken();
-    const dataManager = await extensionDataService.getExtensionDataManager(
-      SDK.getExtensionContext().id,
-      accessToken
-    );
-    let editor: Editor | undefined = undefined;
-    try {
-      editor = await dataManager.getValue(EDITOR_CONFIG_KEY, {
-        scopeType: "User",
-      });
-    } catch (err) {
-      console.warn("default editor ", err);
-    }
-    return editor || Editor.VSCodeWeb;
+    return ExtensionData.getDefaultEditor();
   }
 
   public async setDefaultEditor(editor: Editor) {
@@ -390,17 +374,7 @@ class CodespacesHubContent extends React.Component<
     this.setState({
       defaultEditor: editor,
     });
-    const extensionDataService = await SDK.getService<IExtensionDataService>(
-      CommonServiceIds.ExtensionDataService
-    );
-    const accessToken = await SDK.getAccessToken();
-    const dataManager = await extensionDataService.getExtensionDataManager(
-      SDK.getExtensionContext().id,
-      accessToken
-    );
-    await dataManager.setValue(EDITOR_CONFIG_KEY, editor, {
-      scopeType: "User",
-    });
+    return ExtensionData.setDefaultEditor(editor);
   }
 
   public async refreshCodespacesData(): Promise<void> {
@@ -631,8 +605,26 @@ class CodespacesHubContent extends React.Component<
   public async componentDidMount(): Promise<void> {
     await SDK.init();
     let params = new URL(window.location.href).searchParams;
-    const autoCreate = params.get("autoCreate") === "true";
-    const branchName = params.get("branch");
+    let autoCreate = params.get("autoCreate") === "true";
+    let branchName = params.get("branch");
+
+    // Prevent autoCreate from being triggered multiple times on page refresh
+    const randomId = params.get("randomId");
+    const autoCreatedCodespaces = window.sessionStorage.getItem(
+      "autoCreatedCodespaces"
+    );
+    if (randomId && autoCreate) {
+      if (autoCreatedCodespaces?.includes(randomId)) {
+        autoCreate = false;
+        branchName = null;
+      } else {
+        window.sessionStorage.setItem(
+          "autoCreatedCodespaces",
+          (autoCreatedCodespaces || "") + "," + randomId
+        );
+      }
+    }
+
     const [editor, codespacesConfig] = await Promise.all([
       this.getDefaultEditor(),
       this.getCodespacesConfig(),

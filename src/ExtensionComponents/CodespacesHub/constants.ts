@@ -9,5 +9,3 @@ export const DEFAULT_PAT_SECRET = "{ORG}_ADO_PAT";
 export const ACCESS_TOKEN_KEY = "accessToken";
 
 export const CODESPACES_CONFIG_LOCATION = "/codespaces.json";
-
-export const EDITOR_CONFIG_KEY = "defaultCodespaceEditor";

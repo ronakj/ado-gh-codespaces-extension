@@ -17,7 +17,7 @@ import { FormItem } from "azure-devops-ui/FormItem";
 import { TextField, TextFieldWidth } from "azure-devops-ui/TextField";
 
 import { Octokit } from "octokit";
-import { GitHubData } from "./types";
+import { GitHubData } from "../../types";
 
 export class RenameDialog extends React.Component<
   {
